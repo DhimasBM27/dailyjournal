@@ -14,6 +14,7 @@ $hasil2 = $conn->query($sql2);
 $jumlah_gallery = $hasil2 ? $hasil2->num_rows : 0; // Pastikan jika query gagal, variabel $jumlah_gallery terdefinisi
 ?>
 <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center pt-4">
+    <!-- Card Article -->
     <div class="col">
         <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
             <div class="card-body">
@@ -28,6 +29,8 @@ $jumlah_gallery = $hasil2 ? $hasil2->num_rows : 0; // Pastikan jika query gagal,
             </div>
         </div>
     </div> 
+
+    <!-- Card Gallery -->
     <div class="col">
         <div class="card border border-danger mb-3 shadow" style="max-width: 18rem;">
             <div class="card-body">

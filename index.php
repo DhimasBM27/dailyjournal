@@ -131,46 +131,69 @@ include "koneksi.php";
   </div>
 </section>
 <!-- article end -->
-    <!-- gallery begin -->
-    <section id="gallery" class="text-center p-5 bg-danger-subtle">
-      <div class="container">
-        <h1 class="fw-bold display-4 pb-3">gallery</h1>
-        <div id="carouselExample" class="carousel slide">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img src="https://watermark.lovepik.com/photo/20211210/large/lovepik-men-aggravate-fitness-equipment-picture_501791770.jpg" class="d-block w-100" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src="https://watermark.lovepik.com/photo/20211210/large/lovepik-gym-male-exercise-body-lifting-dumbbells-picture_501791937.jpg" class="d-block w-100" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src="https://watermark.lovepik.com/photo/20211210/large/lovepik-men-aggravate-fitness-equipment-picture_501791770.jpg" class="d-block w-100" alt="..." />
-            </div>
-            <div class="carousel-item">
-              <img src="https://watermark.lovepik.com/photo/20211210/large/lovepik-gym-male-exercise-body-lifting-dumbbells-picture_501791937.jpg" class="d-block w-100" alt="..." />
-            </div>
-          </div>
-          <button
-            class="carousel-control-prev"
-            type="button"
-            data-bs-target="#carouselExample"
-            data-bs-slide="prev"
-          >
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button
-            class="carousel-control-next"
-            type="button"
-            data-bs-target="#carouselExample"
-            data-bs-slide="next"
-          >
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
-        </div>
+<?php
+date_default_timezone_set('Asia/Jakarta');
+
+$servername = "localhost";
+$username = "root";
+$password = "";
+$db = "webdailyjournal"; //nama database
+
+//create connection
+$conn = new mysqli($servername, $username, $password, $db);
+
+//check apakah ada error connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Query untuk mengambil data gambar
+$query = "SELECT gambar FROM gallery ORDER BY tanggal DESC"; // Sesuaikan dengan kolom tabel Anda
+$result = $conn->query($query);
+
+// Cek apakah query berhasil
+if (!$result) {
+    die("Query gagal: " . $conn->error);
+}
+?>
+
+<!-- gallery begin -->
+<section id="gallery" class="text-center p-5 bg-danger-subtle">
+  <div class="container">
+    <h1 class="fw-bold display-4 pb-3">Gallery</h1>
+    <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <?php
+        // Cek apakah query menghasilkan gambar
+        if ($result->num_rows > 0) {
+            $isActive = true; // Menandai item pertama sebagai aktif
+            while ($row = $result->fetch_assoc()) {
+                $imagePath = "img/" . $row['gambar']; // Sesuaikan dengan path gambar yang disimpan
+                $activeClass = $isActive ? "active" : ""; // Menandai item pertama sebagai aktif
+                echo '
+                    <div class="carousel-item ' . $activeClass . '">
+                      <img src="' . $imagePath . '" class="d-block w-100" alt="Image" />
+                    </div>';
+                $isActive = false; // Setelah gambar pertama, set active menjadi false
+            }
+        } else {
+            echo '<div class="carousel-item active"><img src="default_image.jpg" class="d-block w-100" alt="No image available" /></div>';
+        }
+        ?>
       </div>
-    </section>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+
     <!-- gallery end -->
     <!-- schedule begin -->
     <section id="schedule" class="text-center p-5">
@@ -407,5 +430,16 @@ include "koneksi.php";
         }
       };
     </script>
-  </body>
+      <script src="path_to_your_script.js"></script>
+    <style>
+        /* Mengatur ukuran gambar di carousel */
+        #carouselExample img {
+            width: 100%; /* Gambar memenuhi lebar kontainer */
+            height: 800px; /* Menjaga rasio aspek gambar */
+            object-fit: contain; /* Menyesuaikan gambar dalam area tanpa merusak rasio */
+        }
+    </style>
+</body>
+
+  
 </html>
