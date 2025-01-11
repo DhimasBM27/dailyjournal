@@ -131,56 +131,36 @@ include "koneksi.php";
   </div>
 </section>
 <!-- article end -->
-<?php
-date_default_timezone_set('Asia/Jakarta');
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$db = "webdailyjournal"; //nama database
-
-//create connection
-$conn = new mysqli($servername, $username, $password, $db);
-
-//check apakah ada error connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
-// Query untuk mengambil data gambar
-$query = "SELECT gambar FROM gallery ORDER BY tanggal DESC"; // Sesuaikan dengan kolom tabel Anda
-$result = $conn->query($query);
-
-// Cek apakah query berhasil
-if (!$result) {
-    die("Query gagal: " . $conn->error);
-}
-?>
 
 <!-- gallery begin -->
 <section id="gallery" class="text-center p-5 bg-danger-subtle">
   <div class="container">
     <h1 class="fw-bold display-4 pb-3">Gallery</h1>
-    <div id="carouselExample" class="carousel slide">
+    <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <?php
-        // Cek apakah query menghasilkan gambar
+        include "koneksi.php"; // Include your database connection
+        $sql = "SELECT * FROM gallery ORDER BY tanggal DESC"; // Query to fetch gallery data
+        $result = $conn->query($sql);
+
         if ($result->num_rows > 0) {
-            $isActive = true; // Menandai item pertama sebagai aktif
-            while ($row = $result->fetch_assoc()) {
-                $imagePath = "img/" . $row['gambar']; // Sesuaikan dengan path gambar yang disimpan
-                $activeClass = $isActive ? "active" : ""; // Menandai item pertama sebagai aktif
-                echo '
-                    <div class="carousel-item ' . $activeClass . '">
-                      <img src="' . $imagePath . '" class="d-block w-100" alt="Image" />
-                    </div>';
-                $isActive = false; // Setelah gambar pertama, set active menjadi false
-            }
+          $isActive = true; // Mark the first item as active
+          while ($row = $result->fetch_assoc()) {
+            $imagePath = "img/" . $row['gambar']; // Path to the image file
+            $activeClass = $isActive ? "active" : ""; // Set the first item as active
+            echo '
+              <div class="carousel-item ' . $activeClass . '">
+                <img src="' . $imagePath . '" class="d-block w-100" alt="Gallery Image" />
+              </div>';
+            $isActive = false; // After the first item, set active to false
+          }
         } else {
-            echo '<div class="carousel-item active"><img src="default_image.jpg" class="d-block w-100" alt="No image available" /></div>';
+          echo '<div class="carousel-item active"><img src="default_image.jpg" class="d-block w-100" alt="No image available" /></div>';
         }
         ?>
       </div>
+      <!-- Carousel controls -->
       <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="visually-hidden">Previous</span>
@@ -192,6 +172,8 @@ if (!$result) {
     </div>
   </div>
 </section>
+<!-- gallery end -->
+
 
 
     <!-- gallery end -->
